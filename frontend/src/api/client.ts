@@ -468,6 +468,23 @@ class ApiClient {
   // Notifications
   // ============================================
 
+  // ============================================
+  // Advanced Parts Search & Hierarchy
+  // ============================================
+
+  async advancedPartsSearch(q?: string) {
+    const params = q ? `?q=${encodeURIComponent(q)}` : '';
+    return this.request<AdvancedSearchResult>(`/parts-search/advanced${params}`);
+  }
+
+  async getPartsHierarchy() {
+    return this.request<HierarchyItem[]>('/parts-search/hierarchy');
+  }
+
+  async getPartsByHierarchy(systemCode: string, componentCode: string) {
+    return this.request<AdvancedSearchResult>(`/parts-search/hierarchy/${encodeURIComponent(systemCode)}/${encodeURIComponent(componentCode)}`);
+  }
+
   async getNotifications(limit?: number, unreadOnly?: boolean) {
     const params = new URLSearchParams();
     if (limit) params.set('limit', limit.toString());
@@ -722,6 +739,36 @@ export interface Notification {
   link?: string;
   read: boolean;
   createdAt: string;
+}
+
+// Advanced Search Types
+export interface AdvancedSearchPart {
+  id: number;
+  sku: string;
+  name: string;
+  condition: PartCondition;
+  costCents: number | null;
+  onHandQty: number;
+  fitments: { id: number; vehicle: Vehicle }[];
+}
+
+export interface AdvancedSearchResult {
+  totalCount: number;
+  conditionBreakdown: Record<string, number>;
+  priceStats: { avg: number; high: number; low: number };
+  inventoryStats: { inStock: number; outOfStock: number; totalOnHand: number };
+  parts: AdvancedSearchPart[];
+}
+
+export interface HierarchyComponent {
+  code: string;
+  name: string;
+  partCount: number;
+}
+
+export interface HierarchyItem {
+  system: { code: string; name: string };
+  components: HierarchyComponent[];
 }
 
 export const api = new ApiClient();
