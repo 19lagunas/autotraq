@@ -42,7 +42,7 @@ const baseNavItems: NavItem[] = [
     subItems: [
       { label: 'Catalog', to: '/parts', icon: List },
       { label: 'Search Parts', to: '/parts?focus=search', icon: Search },
-      { label: 'Advanced Search', to: '/parts/search', icon: Search },
+      { label: 'Advanced Search', to: '/search', icon: Search },
       { label: 'New Part', to: '/parts?action=new', icon: Plus },
       { label: 'Interchange', to: '/parts?view=groups', icon: GitCompare },
     ],

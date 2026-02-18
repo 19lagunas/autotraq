@@ -13,6 +13,7 @@ import { ScanPage } from './pages/ScanPage';
 import { PartDetailPage } from './pages/PartDetailPage';
 import { AdminPage } from './pages/AdminPage';
 import { AuditPage } from './pages/AuditPage';
+import SearchPage from './pages/SearchPage';
 import { PartsSearchPage } from './pages/PartsSearchPage';
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
         <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/parts" element={<ProtectedRoute><PartsPage /></ProtectedRoute>} />
+        <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
         <Route path="/parts/search" element={<ProtectedRoute><PartsSearchPage /></ProtectedRoute>} />
         <Route path="/parts/:id" element={<ProtectedRoute><PartDetailPage /></ProtectedRoute>} />
         <Route path="/vehicles" element={<ProtectedRoute><VehiclesPage /></ProtectedRoute>} />
