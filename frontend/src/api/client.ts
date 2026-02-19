@@ -485,6 +485,24 @@ class ApiClient {
     return this.request<AdvancedSearchResult>(`/parts-search/hierarchy/${encodeURIComponent(systemCode)}/${encodeURIComponent(componentCode)}`);
   }
 
+  // CSV Import/Export
+  async exportCsv(): Promise<string> {
+    const url = `${API_BASE}/csv/export`;
+    const headers: Record<string, string> = {};
+    const token = this.getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const resp = await fetch(url, { headers });
+    if (!resp.ok) throw new Error('Export failed');
+    return resp.text();
+  }
+
+  async importCsv(csv: string) {
+    return this.request<{ created: number; updated: number; errors: string[] }>('/csv/import', {
+      method: 'POST',
+      body: JSON.stringify({ csv }),
+    });
+  }
+
   async getNotifications(limit?: number, unreadOnly?: boolean) {
     const params = new URLSearchParams();
     if (limit) params.set('limit', limit.toString());

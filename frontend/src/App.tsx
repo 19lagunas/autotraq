@@ -15,6 +15,7 @@ import { AdminPage } from './pages/AdminPage';
 import { AuditPage } from './pages/AuditPage';
 import SearchPage from './pages/SearchPage';
 import { PartsSearchPage } from './pages/PartsSearchPage';
+import { CsvPage } from './pages/CsvPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -69,6 +70,7 @@ function App() {
         <Route path="/requests" element={<ProtectedRoute><RequestsPage /></ProtectedRoute>} />
         <Route path="/scan" element={<ProtectedRoute><ScanPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/csv" element={<ProtectedRoute><CsvPage /></ProtectedRoute>} />
         <Route path="/audit" element={<ProtectedRoute><AuditPage /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
