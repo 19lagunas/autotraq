@@ -1,265 +1,200 @@
-# AUTOTRAQ
+# 🚗 AutoTraq
 
-AUTOTRAQ is a web-based **inventory + operations** system for managing auto parts for small shops and parts operations.
+**Inventory & Operations Management for Auto Parts**
 
-**Tech stack**
-- Frontend: React + Vite + TypeScript
-- Backend: Express.js + TypeScript + Prisma
-- Database: MySQL 8.0
-- Auth: JWT with role-based access control
+AutoTraq is a full-stack web application for managing auto parts inventory, vehicle fitments, interchange groups, and fulfillment workflows. Built for small shops and parts operations that need reliable, auditable inventory tracking.
 
-**Key domain rules**
-- Only vehicles **year 2000 or newer** are tracked
-- Parts can be linked to multiple vehicles (fitment)
-- Parts can be marked as **interchangeable** (explicitly grouped)
-- Inventory tracked via **append-only ledger** (auditable)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
+![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
 
 ---
 
-## Quick Start
+## ✨ Features
+
+- **Parts Management** — Create, edit, and search parts with structured SKU generation and barcode support
+- **Vehicle Fitments** — Link parts to compatible vehicles (year 2000+) for accurate cross-referencing
+- **Interchange Groups** — Group equivalent/interchangeable parts together
+- **Inventory Tracking** — Append-only ledger for full audit trail (receive, correct, return)
+- **Request Workflow** — Create → Approve → Fulfill pipeline for parts requests
+- **Role-Based Access** — Admin, Manager, Fulfillment, and Viewer roles with granular permissions
+- **Barcode Login** — Quick barcode scan login for warehouse staff
+- **Part Images** — Upload and manage photos for each part
+- **CSV Import/Export** — Bulk data management
+- **Notifications** — In-app alerts for low stock, request status changes, and role decisions
+- **Advanced Search** — Filter by system/component hierarchy, condition, and availability
+- **Analytics Dashboard** — Inventory history, top movers, and dead stock reports
+
+---
+
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 18, Vite, Tailwind CSS 4, TypeScript |
+| **Backend** | Express.js, TypeScript, Zod validation |
+| **Database** | MySQL 8.0 with Prisma ORM |
+| **Auth** | JWT with role-based access control |
+| **Security** | Helmet, CORS, rate limiting, bcrypt |
+| **Testing** | Vitest, Supertest |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ (LTS recommended)
-- Docker and Docker Compose
-- npm
 
-### 1. Start MySQL Database
+- **Node.js** 18+ (LTS recommended)
+- **Docker** and Docker Compose (for MySQL)
+- **npm**
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/an5onc/autotraq.git
+cd autotraq
+```
+
+### 2. Start the Database
 
 ```bash
 docker compose up -d
 ```
 
-This starts MySQL on port 3306 with:
-- Database: `autotraq`
-- User: `autotraq`
-- Password: `autotraq123`
+This starts MySQL on port 3306 with database `autotraq` / user `autotraq` / password `autotraq123`.
 
-### 2. Setup Backend
+### 3. Backend Setup
 
 ```bash
 cd backend
 npm install
-cp .env.example .env  # or use existing .env
+cp .env.example .env    # Uses default local settings
 npx prisma generate
-npx prisma migrate dev
-npm run dev
+npx prisma migrate dev  # Run database migrations
+npm run db:seed-admins  # Seed admin accounts (optional)
+npm run dev             # Start dev server at http://localhost:3001
 ```
 
-Backend runs at: http://localhost:3001
-
-### 3. Setup Frontend
+### 4. Frontend Setup
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm run dev             # Start dev server at http://localhost:5173
 ```
 
-Frontend runs at: http://localhost:5173
+### Default Admin Login
+
+After running `db:seed-admins`:
+- **Email:** `anson@autotraq.com`
+- **Password:** `autotraq2026`
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 autotraq/
 ├── backend/
 │   ├── src/
-│   │   ├── routes/         # API route definitions
 │   │   ├── controllers/    # Request handlers
 │   │   ├── services/       # Business logic
 │   │   ├── repositories/   # Database access (Prisma)
-│   │   ├── middleware/     # Auth, validation, errors
+│   │   ├── routes/         # API route definitions
+│   │   ├── middleware/      # Auth, validation, error handling
 │   │   ├── schemas/        # Zod validation schemas
+│   │   ├── scripts/        # Seed scripts
 │   │   └── utils/          # Helpers
 │   ├── prisma/
 │   │   └── schema.prisma   # Database schema
-│   └── tests/
-│       ├── unit/           # Unit tests
-│       └── integration/    # Integration tests
+│   └── tests/              # Unit & integration tests
 ├── frontend/
 │   └── src/
 │       ├── api/            # API client
-│       ├── contexts/       # React contexts
+│       ├── contexts/       # React contexts (auth, theme)
 │       ├── pages/          # Page components
-│       └── components/     # Shared components
-├── docs/
-│   └── api.md              # API documentation
-├── docker-compose.yml
-└── CLAUDE.md
+│       └── components/     # Shared UI components
+├── docs/                   # API documentation
+├── docker-compose.yml      # Local MySQL setup
+└── DEPLOY.md               # Railway deployment guide
 ```
 
 ---
 
-## Environment Variables
-
-### Backend (`backend/.env`)
-
-```env
-PORT=3001
-DATABASE_URL="mysql://autotraq:autotraq123@localhost:3306/autotraq"
-JWT_SECRET="your-super-secret-jwt-key-change-in-production"
-JWT_EXPIRES_IN="24h"
-```
-
----
-
-## Running Tests
+## 🧪 Running Tests
 
 ```bash
 cd backend
-
-# All tests
-npm test
-
-# Unit tests only
-npm run test:unit
-
-# Integration tests only
-npm run test:int
+npm test              # All tests
+npm run test:unit     # Unit tests only
+npm run test:int      # Integration tests only
+npm run test:watch    # Watch mode
 ```
 
 ---
 
-## API Overview
+## 🌐 Deployment
 
-See [docs/api.md](docs/api.md) for full API documentation.
+AutoTraq is configured for **Railway** deployment. See **[DEPLOY.md](DEPLOY.md)** for full step-by-step instructions.
 
-### Key Endpoints
-
-**Auth**
-- `POST /api/auth/register` - Register user
-- `POST /api/auth/login` - Login
-
-**Parts**
-- `POST /api/parts` - Create part
-- `GET /api/parts` - List parts
-- `POST /api/parts/:id/fitments` - Add vehicle fitment
-
-**Vehicles**
-- `POST /api/vehicles` - Create vehicle (year >= 2000)
-- `GET /api/vehicles` - List vehicles
-
-**Interchange Groups**
-- `POST /api/interchange-groups` - Create group
-- `POST /api/interchange-groups/:id/members` - Add part to group
-
-**Inventory**
-- `POST /api/inventory/receive` - Receive stock
-- `POST /api/inventory/correct` - Stock correction
-- `GET /api/inventory/on-hand` - Get quantities
-- `GET /api/inventory/events` - Get event history
-
-**Requests**
-- `POST /api/requests` - Create request
-- `POST /api/requests/:id/approve` - Approve
-- `POST /api/requests/:id/fulfill` - Fulfill
+**Quick overview:**
+1. Provision MySQL on Railway
+2. Deploy backend (Express API) as a service
+3. Deploy frontend (React SPA) as a service
+4. Set environment variables to connect them
 
 ---
 
-## Example Workflow (curl)
+## 🔑 Environment Variables
 
-```bash
-# 1. Register admin
-curl -X POST http://localhost:3001/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@test.com","password":"password123","name":"Admin","role":"admin"}'
+### Backend (`backend/.env`)
 
-# 2. Login and save token
-TOKEN=$(curl -s -X POST http://localhost:3001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"admin@test.com","password":"password123"}' | jq -r '.data.token')
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `3001` |
+| `DATABASE_URL` | MySQL connection string | `mysql://autotraq:autotraq123@localhost:3306/autotraq` |
+| `JWT_SECRET` | Secret for signing JWTs | *(change in production)* |
+| `JWT_EXPIRES_IN` | Token expiry | `24h` |
+| `FRONTEND_URL` | Allowed CORS origin (production) | — |
+| `NODE_ENV` | Environment | `development` |
 
-# 3. Create location
-curl -X POST http://localhost:3001/api/inventory/locations \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Main Warehouse"}'
+### Frontend
 
-# 4. Create part
-curl -X POST http://localhost:3001/api/parts \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"sku":"BRK-001","name":"Brake Pad Set"}'
-
-# 5. Create vehicle (year >= 2000)
-curl -X POST http://localhost:3001/api/vehicles \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"year":2020,"make":"Honda","model":"Civic"}'
-
-# 6. Add fitment
-curl -X POST http://localhost:3001/api/parts/1/fitments \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"vehicleId":1}'
-
-# 7. Receive stock
-curl -X POST http://localhost:3001/api/inventory/receive \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"partId":1,"locationId":1,"qty":10}'
-
-# 8. Check on-hand
-curl "http://localhost:3001/api/inventory/on-hand?partId=1" \
-  -H "Authorization: Bearer $TOKEN"
-
-# 9. Create request
-curl -X POST http://localhost:3001/api/requests \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"items":[{"partId":1,"qtyRequested":3,"locationId":1}]}'
-
-# 10. Approve request
-curl -X POST http://localhost:3001/api/requests/1/approve \
-  -H "Authorization: Bearer $TOKEN"
-
-# 11. Fulfill request
-curl -X POST http://localhost:3001/api/requests/1/fulfill \
-  -H "Authorization: Bearer $TOKEN"
-
-# 12. Verify on-hand decreased (should be 7)
-curl "http://localhost:3001/api/inventory/on-hand?partId=1" \
-  -H "Authorization: Bearer $TOKEN"
-```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_API_URL` | Backend API base URL | *(falls back to same-origin `/api`)* |
 
 ---
 
-## MVP Features (Due Feb 3, 2026)
+## 👥 Roles & Permissions
 
-- [x] JWT login with roles (admin, manager, fulfillment, viewer)
-- [x] Create parts with SKU
-- [x] Create vehicles (year >= 2000) with fitment
-- [x] Interchange groups for part equivalents
-- [x] Receive stock (auditable events)
-- [x] Request workflow (create → approve → fulfill)
-- [x] React UI: Parts, Inventory, Requests pages
-
----
-
-## Roles & Permissions
-
-| Action | admin | manager | fulfillment | viewer |
-|--------|-------|---------|-------------|--------|
-| View all data | ✓ | ✓ | ✓ | ✓ |
-| Create parts/vehicles | ✓ | ✓ | | |
-| Manage fitments/groups | ✓ | ✓ | | |
-| Receive stock | ✓ | ✓ | ✓ | |
-| Stock corrections | ✓ | ✓ | | |
-| Approve requests | ✓ | ✓ | | |
-| Fulfill requests | ✓ | ✓ | ✓ | |
-| Create requests | ✓ | ✓ | ✓ | ✓ |
+| Action | Admin | Manager | Fulfillment | Viewer |
+|--------|:-----:|:-------:|:-----------:|:------:|
+| View all data | ✅ | ✅ | ✅ | ✅ |
+| Create parts/vehicles | ✅ | ✅ | | |
+| Manage fitments/groups | ✅ | ✅ | | |
+| Receive stock | ✅ | ✅ | ✅ | |
+| Stock corrections | ✅ | ✅ | | |
+| Approve requests | ✅ | ✅ | | |
+| Fulfill requests | ✅ | ✅ | ✅ | |
+| Create requests | ✅ | ✅ | ✅ | ✅ |
+| Manage users | ✅ | | | |
 
 ---
 
-## Contributing
+## 📄 API Documentation
 
-- Use feature branches: `feature/<short-name>`
-- Keep PRs small and reviewable
-- Update docs/tests when making changes
+See [docs/api.md](docs/api.md) for the full API reference.
 
 ---
 
-## License
+## 📝 License
 
-TBD
+MIT
+
+---
+
+*Built by Anson's team — Spring 2026*
