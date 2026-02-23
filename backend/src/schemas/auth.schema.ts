@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
-// Self-registration: only fulfillment or viewer
+// Self-registration (MVP test flow supports admin creation)
 export const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   name: z.string().min(1, 'Name is required').max(100),
-  role: z.enum(['fulfillment', 'viewer']).optional(),
+  role: z.enum(['admin', 'manager', 'fulfillment', 'viewer']).optional(),
 });
 
 // Admin creating users (can set any role including admin)
