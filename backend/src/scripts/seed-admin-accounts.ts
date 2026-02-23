@@ -14,10 +14,10 @@ const DEFAULT_PASSWORD = 'autotraq2026';
 
 const ADMIN_ACCOUNTS = [
   { email: 'acordeiro@autotraq.app', name: 'Anson Cordeiro', role: 'admin' as const },
-  { email: 'team1@autotraq.app',     name: 'Team Member 1',  role: 'admin' as const },
-  { email: 'team2@autotraq.app',     name: 'Team Member 2',  role: 'admin' as const },
-  { email: 'team3@autotraq.app',     name: 'Team Member 3',  role: 'admin' as const },
-  { email: 'team4@autotraq.app',     name: 'Team Member 4',  role: 'admin' as const },
+  { email: 'ben@autotraq.app',      name: 'Ben',             role: 'admin' as const },
+  { email: 'gus@autotraq.app',      name: 'Gus',             role: 'admin' as const },
+  { email: 'dean@autotraq.app',     name: 'Dean',            role: 'admin' as const },
+  { email: 'fatima@autotraq.app',   name: 'Fatima',          role: 'admin' as const },
 ];
 
 async function main() {
