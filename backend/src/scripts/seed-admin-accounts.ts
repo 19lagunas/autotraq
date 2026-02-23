@@ -1,34 +1,39 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+/**
+ * Seed Admin Accounts
+ * Creates default admin accounts for the AutoTraQ team.
+ * Idempotent — skips users that already exist (matched by email).
+ *
+ * Usage: npm run db:seed-admins
+ */
 
-const prisma = new PrismaClient();
+import bcrypt from 'bcrypt';
+import prisma from '../repositories/prisma.js';
+
+const SALT_ROUNDS = 10;
+const DEFAULT_PASSWORD = 'autotraq2026';
 
 const ADMIN_ACCOUNTS = [
-  { email: 'anson@autotraq.com', name: 'Anson', role: 'admin' as const },
-  { email: 'team1@autotraq.com', name: 'TeamMember1', role: 'admin' as const },
-  { email: 'team2@autotraq.com', name: 'TeamMember2', role: 'admin' as const },
-  { email: 'team3@autotraq.com', name: 'TeamMember3', role: 'admin' as const },
-  { email: 'team4@autotraq.com', name: 'TeamMember4', role: 'admin' as const },
+  { email: 'acordeiro@autotraq.app', name: 'Anson Cordeiro', role: 'admin' as const },
+  { email: 'team1@autotraq.app',     name: 'Team Member 1',  role: 'admin' as const },
+  { email: 'team2@autotraq.app',     name: 'Team Member 2',  role: 'admin' as const },
+  { email: 'team3@autotraq.app',     name: 'Team Member 3',  role: 'admin' as const },
+  { email: 'team4@autotraq.app',     name: 'Team Member 4',  role: 'admin' as const },
 ];
-
-const DEFAULT_PASSWORD = 'autotraq2026';
 
 async function main() {
   console.log('🌱 Seeding admin accounts...\n');
 
-  const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, 10);
+  const hashedPassword = await bcrypt.hash(DEFAULT_PASSWORD, SALT_ROUNDS);
 
   for (const account of ADMIN_ACCOUNTS) {
-    const existing = await prisma.user.findUnique({
-      where: { email: account.email },
-    });
+    const existing = await prisma.user.findUnique({ where: { email: account.email } });
 
     if (existing) {
-      console.log(`⏭️  Skipped: ${account.email} (already exists)`);
+      console.log(`  ⏭  ${account.email} — already exists (id: ${existing.id}), skipping`);
       continue;
     }
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         email: account.email,
         name: account.name,
@@ -37,16 +42,17 @@ async function main() {
       },
     });
 
-    console.log(`✅ Created: ${account.email} (${account.name})`);
+    console.log(`  ✅ ${account.email} — created (id: ${user.id})`);
   }
 
-  console.log('\n🎉 Admin seeding complete!');
+  console.log('\n🎉 Admin seed complete!');
   console.log(`   Default password: ${DEFAULT_PASSWORD}`);
+  console.log('   ⚠️  Change passwords after first login.\n');
 }
 
 main()
-  .catch((err) => {
-    console.error('❌ Seed failed:', err);
+  .catch((e) => {
+    console.error('❌ Seed failed:', e);
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
