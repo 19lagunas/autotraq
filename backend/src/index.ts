@@ -75,18 +75,31 @@ app.use(notFoundHandler);
 // Global error handler
 app.use(errorHandler);
 
-// One-time role fix: ensure only acordeiro is admin, rest are manager
+// Startup: seed team accounts if missing + fix roles
+import bcrypt from 'bcrypt';
 (async () => {
   try {
-    const { default: prisma } = await import('./repositories/prisma.js');
-    const teamEmails = ['ben@autotraq.app', 'gus@autotraq.app', 'dean@autotraq.app', 'fatima@autotraq.app'];
-    for (const email of teamEmails) {
-      await prisma.user.updateMany({ where: { email, role: 'admin' }, data: { role: 'manager' } });
+    const accounts = [
+      { email: 'acordeiro@autotraq.app', name: 'Anson Cordeiro', role: 'admin' },
+      { email: 'ben@autotraq.app', name: 'Ben', role: 'manager' },
+      { email: 'gus@autotraq.app', name: 'Gus', role: 'manager' },
+      { email: 'dean@autotraq.app', name: 'Dean', role: 'manager' },
+      { email: 'fatima@autotraq.app', name: 'Fatima', role: 'manager' },
+    ];
+    const hashed = await bcrypt.hash('autotraq2026', 10);
+    for (const acct of accounts) {
+      const existing = await prisma.user.findUnique({ where: { email: acct.email } });
+      if (!existing) {
+        await prisma.user.create({ data: { email: acct.email, name: acct.name, password: hashed, role: acct.role } });
+        console.log(`[SEED] Created ${acct.email} (${acct.role})`);
+      } else if (acct.role !== 'admin' && existing.role === 'admin') {
+        await prisma.user.update({ where: { email: acct.email }, data: { role: acct.role } });
+        console.log(`[SEED] Fixed ${acct.email} → ${acct.role}`);
+      }
     }
-    // Also fix any non-acordeiro admins with autotraq.app emails
-    console.log('[STARTUP] Role migration complete');
+    console.log('[STARTUP] Seed/migration complete');
   } catch (e) {
-    console.log('[STARTUP] Role migration skipped:', (e as Error).message);
+    console.log('[STARTUP] Seed skipped:', (e as Error).message);
   }
 })();
 
