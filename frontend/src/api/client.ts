@@ -468,6 +468,41 @@ class ApiClient {
   // Notifications
   // ============================================
 
+  // ============================================
+  // Advanced Parts Search & Hierarchy
+  // ============================================
+
+  async advancedPartsSearch(q?: string) {
+    const params = q ? `?q=${encodeURIComponent(q)}` : '';
+    return this.request<AdvancedSearchResult>(`/parts-search/advanced${params}`);
+  }
+
+  async getPartsHierarchy() {
+    return this.request<HierarchyItem[]>('/parts-search/hierarchy');
+  }
+
+  async getPartsByHierarchy(systemCode: string, componentCode: string) {
+    return this.request<AdvancedSearchResult>(`/parts-search/hierarchy/${encodeURIComponent(systemCode)}/${encodeURIComponent(componentCode)}`);
+  }
+
+  // CSV Import/Export
+  async exportCsv(): Promise<string> {
+    const url = `${API_BASE}/csv/export`;
+    const headers: Record<string, string> = {};
+    const token = this.getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const resp = await fetch(url, { headers });
+    if (!resp.ok) throw new Error('Export failed');
+    return resp.text();
+  }
+
+  async importCsv(csv: string) {
+    return this.request<{ created: number; updated: number; errors: string[] }>('/csv/import', {
+      method: 'POST',
+      body: JSON.stringify({ csv }),
+    });
+  }
+
   async getNotifications(limit?: number, unreadOnly?: boolean) {
     const params = new URLSearchParams();
     if (limit) params.set('limit', limit.toString());
@@ -722,6 +757,36 @@ export interface Notification {
   link?: string;
   read: boolean;
   createdAt: string;
+}
+
+// Advanced Search Types
+export interface AdvancedSearchPart {
+  id: number;
+  sku: string;
+  name: string;
+  condition: PartCondition;
+  costCents: number | null;
+  onHandQty: number;
+  fitments: { id: number; vehicle: Vehicle }[];
+}
+
+export interface AdvancedSearchResult {
+  totalCount: number;
+  conditionBreakdown: Record<string, number>;
+  priceStats: { avg: number; high: number; low: number };
+  inventoryStats: { inStock: number; outOfStock: number; totalOnHand: number };
+  parts: AdvancedSearchPart[];
+}
+
+export interface HierarchyComponent {
+  code: string;
+  name: string;
+  partCount: number;
+}
+
+export interface HierarchyItem {
+  system: { code: string; name: string };
+  components: HierarchyComponent[];
 }
 
 export const api = new ApiClient();

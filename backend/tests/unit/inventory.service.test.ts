@@ -1,23 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock Prisma
-const mockPrismaInventoryEvent = {
-  aggregate: vi.fn(),
-  create: vi.fn(),
-  findMany: vi.fn(),
-  groupBy: vi.fn(),
-  count: vi.fn(),
-};
-
-const mockPrismaPart = {
-  findUnique: vi.fn(),
-};
-
-const mockPrismaLocation = {
-  findUnique: vi.fn(),
-  findMany: vi.fn(),
-  create: vi.fn(),
-};
+const { mockPrismaInventoryEvent, mockPrismaPart, mockPrismaLocation } = vi.hoisted(() => ({
+  mockPrismaInventoryEvent: {
+    aggregate: vi.fn(),
+    create: vi.fn(),
+    findMany: vi.fn(),
+    groupBy: vi.fn(),
+    count: vi.fn(),
+  },
+  mockPrismaPart: {
+    findUnique: vi.fn(),
+  },
+  mockPrismaLocation: {
+    findUnique: vi.fn(),
+    findMany: vi.fn(),
+    create: vi.fn(),
+  },
+}));
 
 vi.mock('../../src/repositories/prisma.js', () => ({
   default: {

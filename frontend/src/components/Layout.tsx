@@ -8,6 +8,7 @@ import {
   Plus, List, Usb, Camera, Truck, GitCompare, BarChart2, ArrowDownUp,
   Users, UserPlus, ShieldAlert, QrCode, LayoutDashboard, Command,
   Sun, Moon, Monitor, History,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
 
@@ -42,6 +43,7 @@ const baseNavItems: NavItem[] = [
     subItems: [
       { label: 'Catalog', to: '/parts', icon: List },
       { label: 'Search Parts', to: '/parts?focus=search', icon: Search },
+      { label: 'Advanced Search', to: '/search', icon: Search },
       { label: 'New Part', to: '/parts?action=new', icon: Plus },
       { label: 'Interchange', to: '/parts?view=groups', icon: GitCompare },
     ],
@@ -120,9 +122,15 @@ export function Layout({ children }: LayoutProps) {
     label: 'Audit Log',
   };
 
+  const csvNavItem: NavItem = {
+    to: '/csv',
+    icon: FileSpreadsheet,
+    label: 'CSV Import/Export',
+  };
+
   const navItems: NavItem[] = (isAdmin || isManager)
-    ? [...baseNavItems, auditNavItem, adminNavItem]
-    : baseNavItems;
+    ? [...baseNavItems, csvNavItem, auditNavItem, adminNavItem]
+    : [...baseNavItems, csvNavItem];
 
   const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
     const active = navItems.find(item => location.pathname.startsWith(item.to));

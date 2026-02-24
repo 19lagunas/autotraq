@@ -13,6 +13,9 @@ import { ScanPage } from './pages/ScanPage';
 import { PartDetailPage } from './pages/PartDetailPage';
 import { AdminPage } from './pages/AdminPage';
 import { AuditPage } from './pages/AuditPage';
+import SearchPage from './pages/SearchPage';
+import { PartsSearchPage } from './pages/PartsSearchPage';
+import { CsvPage } from './pages/CsvPage';
 
 function App() {
   const { user, loading } = useAuth();
@@ -59,12 +62,15 @@ function App() {
         <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="/parts" element={<ProtectedRoute><PartsPage /></ProtectedRoute>} />
+        <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+        <Route path="/parts/search" element={<ProtectedRoute><PartsSearchPage /></ProtectedRoute>} />
         <Route path="/parts/:id" element={<ProtectedRoute><PartDetailPage /></ProtectedRoute>} />
         <Route path="/vehicles" element={<ProtectedRoute><VehiclesPage /></ProtectedRoute>} />
         <Route path="/inventory" element={<ProtectedRoute><InventoryPage /></ProtectedRoute>} />
         <Route path="/requests" element={<ProtectedRoute><RequestsPage /></ProtectedRoute>} />
         <Route path="/scan" element={<ProtectedRoute><ScanPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/csv" element={<ProtectedRoute><CsvPage /></ProtectedRoute>} />
         <Route path="/audit" element={<ProtectedRoute><AuditPage /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

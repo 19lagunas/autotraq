@@ -99,10 +99,7 @@ export async function login(input: LoginInput): Promise<AuthResult> {
     throw new Error('Invalid email or password');
   }
 
-  // Admin & manager must use barcode login
-  if (user.role === 'admin' || user.role === 'manager') {
-    throw new Error('Admin and manager accounts must use barcode login');
-  }
+  // MVP allows email/password login for all roles (including admin/manager)
 
   const validPassword = await bcrypt.compare(input.password, user.password);
   if (!validPassword) {
