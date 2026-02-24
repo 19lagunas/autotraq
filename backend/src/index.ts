@@ -28,6 +28,9 @@ app.use(
   })
 );
 
+// Trust proxy (Railway / Cloudflare sit in front)
+app.set('trust proxy', 1);
+
 // JSON body parser
 app.use(express.json());
 
