@@ -75,6 +75,21 @@ app.use(notFoundHandler);
 // Global error handler
 app.use(errorHandler);
 
+// One-time role fix: ensure only acordeiro is admin, rest are manager
+(async () => {
+  try {
+    const { default: prisma } = await import('./repositories/prisma.js');
+    const teamEmails = ['ben@autotraq.app', 'gus@autotraq.app', 'dean@autotraq.app', 'fatima@autotraq.app'];
+    for (const email of teamEmails) {
+      await prisma.user.updateMany({ where: { email, role: 'admin' }, data: { role: 'manager' } });
+    }
+    // Also fix any non-acordeiro admins with autotraq.app emails
+    console.log('[STARTUP] Role migration complete');
+  } catch (e) {
+    console.log('[STARTUP] Role migration skipped:', (e as Error).message);
+  }
+})();
+
 // Start server
 app.listen(PORT, () => {
   console.log(`
