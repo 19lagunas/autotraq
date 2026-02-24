@@ -207,7 +207,7 @@ export function WelcomePage() {
             <h2 className="text-3xl font-bold">The Team</h2>
           </div>
           <p className="text-slate-400 mb-12">
-            Built at Georgetown High School, 2025–2026
+            Built at University of Northern Colorado, 2025–2026
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-6">
@@ -251,7 +251,7 @@ export function WelcomePage() {
             </div>
             <span className="text-sm font-bold tracking-wider text-slate-400">AUTOTRAQ</span>
           </div>
-          <p className="text-xs text-slate-600">© {new Date().getFullYear()} AutoTraq · Georgetown High School</p>
+          <p className="text-xs text-slate-600">© {new Date().getFullYear()} AutoTraq · University of Northern Colorado</p>
         </div>
       </footer>
     </div>
