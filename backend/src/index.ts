@@ -76,17 +76,18 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Startup: seed team accounts if missing + fix roles
-import bcrypt from 'bcrypt';
+import { hash } from 'bcrypt';
+import { Role } from '@prisma/client';
 (async () => {
   try {
-    const accounts = [
-      { email: 'acordeiro@autotraq.app', name: 'Anson Cordeiro', role: 'admin' },
-      { email: 'ben@autotraq.app', name: 'Ben', role: 'manager' },
-      { email: 'gus@autotraq.app', name: 'Gus', role: 'manager' },
-      { email: 'dean@autotraq.app', name: 'Dean', role: 'manager' },
-      { email: 'fatima@autotraq.app', name: 'Fatima', role: 'manager' },
+    const accounts: { email: string; name: string; role: Role }[] = [
+      { email: 'acordeiro@autotraq.app', name: 'Anson Cordeiro', role: 'admin' as Role },
+      { email: 'ben@autotraq.app', name: 'Ben', role: 'manager' as Role },
+      { email: 'gus@autotraq.app', name: 'Gus', role: 'manager' as Role },
+      { email: 'dean@autotraq.app', name: 'Dean', role: 'manager' as Role },
+      { email: 'fatima@autotraq.app', name: 'Fatima', role: 'manager' as Role },
     ];
-    const hashed = await bcrypt.hash('autotraq2026', 10);
+    const hashed = await hash('autotraq2026', 10);
     for (const acct of accounts) {
       const existing = await prisma.user.findUnique({ where: { email: acct.email } });
       if (!existing) {
