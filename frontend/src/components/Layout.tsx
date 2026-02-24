@@ -8,7 +8,7 @@ import {
   Plus, List, Usb, Camera, Truck, GitCompare, BarChart2, ArrowDownUp,
   Users, UserPlus, ShieldAlert, QrCode, LayoutDashboard, Command,
   Sun, Moon, Monitor, History,
-  FileSpreadsheet,
+  FileSpreadsheet, Sparkles,
 } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
 
@@ -35,6 +35,11 @@ const baseNavItems: NavItem[] = [
     to: '/dashboard',
     icon: LayoutDashboard,
     label: 'Dashboard',
+  },
+  {
+    to: '/solutions',
+    icon: Sparkles,
+    label: 'Solution Finder',
   },
   {
     to: '/parts',

@@ -11,6 +11,7 @@ import imagesRoutes, { partImagesRouter } from './images.routes.js';
 import notificationsRoutes from './notifications.routes.js';
 import partsSearchRoutes from './partsSearch.routes.js';
 import csvRoutes from './csv.routes.js';
+import solutionsRoutes from './solutions.routes.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 import * as interchangeController from '../controllers/interchange.controller.js';
 
@@ -33,6 +34,7 @@ router.use('/parts/:partId/images', partImagesRouter);
 router.use('/notifications', notificationsRoutes);
 router.use('/parts-search', partsSearchRoutes);
 router.use('/csv', csvRoutes);
+router.use('/solutions', solutionsRoutes);
 
 // Additional utility route: get interchangeable parts for a specific part
 router.get(
