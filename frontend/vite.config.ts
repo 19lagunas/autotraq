@@ -15,6 +15,6 @@ export default defineConfig({
   },
   preview: {
     host: true,
-    allowedHosts: ['localhost', '.railway.app'],
+    allowedHosts: ['localhost', '.railway.app', 'cs490unco.org'],
   },
 });
