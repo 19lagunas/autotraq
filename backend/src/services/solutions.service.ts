@@ -4,15 +4,15 @@ export interface SolutionQuery {
   year: number;
   make: string;
   model: string;
-  system?: string;      // SKU system code filter
-  component?: string;   // SKU component code filter
-  partName?: string;     // Text search
+  system?: string;
+  component?: string;
+  partName?: string;
 }
 
 export interface SolutionResult {
-  exact: any[];        // Parts that fit this exact vehicle
-  interchange: any[];  // Parts from interchange groups that also fit other vehicles
-  alternatives: any[]; // Other parts in the same category that fit similar vehicles
+  exact: any[];
+  interchange: any[];
+  alternatives: any[];
   query: {
     vehicle: string;
     matchedVehicleId: number | null;
@@ -20,58 +20,33 @@ export interface SolutionResult {
   };
 }
 
-/**
- * The Solution Engine — resolves a customer's vehicle + need into actionable part options.
- * 
- * Flow:
- * 1. Find the vehicle (or closest match)
- * 2. Find exact-fit parts via PartFitment
- * 3. Find interchange parts (same interchange group, fits other vehicles)
- * 4. Find alternatives (same category/system, fits similar vehicles from same make)
- */
 export async function findSolutions(query: SolutionQuery): Promise<SolutionResult> {
   const vehicleLabel = `${query.year} ${query.make} ${query.model}`;
 
-  // Step 1: Find the exact vehicle
+  // Step 1: Find the exact vehicle (MySQL is case-insensitive by default)
   const vehicle = await prisma.vehicle.findFirst({
     where: {
       year: query.year,
-      make: { equals: query.make, mode: 'insensitive' },
-      model: { equals: query.model, mode: 'insensitive' },
+      make: query.make,
+      model: query.model,
     },
   });
 
   if (!vehicle) {
-    // Try to find similar vehicles (same make, nearby years)
-    const similar = await prisma.vehicle.findMany({
-      where: {
-        make: { equals: query.make, mode: 'insensitive' },
-        year: { gte: query.year - 3, lte: query.year + 3 },
-      },
-      take: 5,
-      orderBy: { year: 'asc' },
-    });
-
     return {
       exact: [],
       interchange: [],
       alternatives: [],
-      query: {
-        vehicle: vehicleLabel,
-        matchedVehicleId: null,
-        totalResults: 0,
-      },
+      query: { vehicle: vehicleLabel, matchedVehicleId: null, totalResults: 0 },
     };
   }
 
-  // Step 2: Find exact-fit parts
-  let exactWhere: any = { vehicleId: vehicle.id };
+  // Step 2: Find exact-fit parts via PartFitment
   const partWhere: any = {};
-  
   if (query.partName) {
     partWhere.OR = [
-      { name: { contains: query.partName, mode: 'insensitive' } },
-      { description: { contains: query.partName, mode: 'insensitive' } },
+      { name: { contains: query.partName } },
+      { description: { contains: query.partName } },
     ];
   }
   if (query.system) {
@@ -81,55 +56,38 @@ export async function findSolutions(query: SolutionQuery): Promise<SolutionResul
   const exactFitments = await prisma.partFitment.findMany({
     where: {
       vehicleId: vehicle.id,
-      part: Object.keys(partWhere).length > 0 ? partWhere : undefined,
+      ...(Object.keys(partWhere).length > 0 ? { part: partWhere } : {}),
     },
     include: {
       part: {
         include: {
-          inventoryEvents: {
-            select: { quantity: true, type: true },
-          },
-          interchangeMembers: {
-            include: {
-              group: {
-                include: {
-                  members: {
-                    include: {
-                      part: {
-                        include: {
-                          fitments: {
-                            include: { vehicle: true },
-                            take: 10,
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+          inventoryEvents: true,
         },
       },
     },
   });
 
-  const exactParts = exactFitments.map(f => ({
-    ...f.part,
-    matchType: 'exact' as const,
-    fitsVehicle: vehicleLabel,
-    interchangeMembers: undefined,
-    inventoryEvents: undefined,
-    stockOnHand: calculateStock(f.part.inventoryEvents),
-  }));
+  const exactParts = exactFitments.map(f => {
+    const stock = f.part.inventoryEvents.reduce((sum, e) => sum + e.qtyDelta, 0);
+    return {
+      id: f.part.id,
+      name: f.part.name,
+      sku: f.part.sku,
+      description: f.part.description,
+      condition: f.part.condition,
+      costCents: f.part.costCents,
+      matchType: 'exact' as const,
+      fitsVehicle: vehicleLabel,
+      stockOnHand: stock,
+    };
+  });
+
+  const exactPartIds = exactParts.map(p => p.id);
 
   // Step 3: Find interchange parts
-  // Get all interchange group IDs for the exact-fit parts
-  const exactPartIds = exactParts.map(p => p.id);
   const interchangeParts: any[] = [];
-
   if (exactPartIds.length > 0) {
-    const interchangeMembers = await prisma.interchangeGroupMember.findMany({
+    const members = await prisma.interchangeGroupMember.findMany({
       where: {
         group: {
           members: {
@@ -141,37 +99,36 @@ export async function findSolutions(query: SolutionQuery): Promise<SolutionResul
       include: {
         part: {
           include: {
-            fitments: {
-              include: { vehicle: true },
-              take: 5,
-            },
-            inventoryEvents: {
-              select: { quantity: true, type: true },
-            },
+            fitments: { include: { vehicle: true }, take: 5 },
+            inventoryEvents: true,
           },
         },
-        group: { select: { name: true, description: true } },
+        group: true,
       },
     });
 
-    for (const member of interchangeMembers) {
+    for (const m of members) {
+      const stock = m.part.inventoryEvents.reduce((sum, e) => sum + e.qtyDelta, 0);
       interchangeParts.push({
-        ...member.part,
+        id: m.part.id,
+        name: m.part.name,
+        sku: m.part.sku,
+        description: m.part.description,
+        condition: m.part.condition,
+        costCents: m.part.costCents,
         matchType: 'interchange' as const,
-        interchangeGroup: member.group.name,
-        fitsVehicles: member.part.fitments.map(f => `${f.vehicle.year} ${f.vehicle.make} ${f.vehicle.model}`),
-        fitments: undefined,
-        inventoryEvents: undefined,
-        stockOnHand: calculateStock(member.part.inventoryEvents),
+        interchangeGroup: m.group.name,
+        fitsVehicles: m.part.fitments.map(f => `${f.vehicle.year} ${f.vehicle.make} ${f.vehicle.model}`),
+        stockOnHand: stock,
       });
     }
   }
 
-  // Step 4: Find alternatives — same category parts that fit vehicles from the same make
+  // Step 4: Find alternatives (same SKU prefix, same make, not already found)
   const alternatives: any[] = [];
-  
+  const foundIds = [...exactPartIds, ...interchangeParts.map(p => p.id)];
+
   if (exactParts.length > 0) {
-    // Get the SKU prefixes (system+component) from exact matches to find similar parts
     const skuPrefixes = [...new Set(exactParts.map(p => {
       const parts = p.sku.split('-');
       return parts.length >= 2 ? `${parts[0]}-${parts[1]}` : parts[0];
@@ -181,74 +138,63 @@ export async function findSolutions(query: SolutionQuery): Promise<SolutionResul
       const altParts = await prisma.part.findMany({
         where: {
           sku: { startsWith: prefix },
-          id: { notIn: [...exactPartIds, ...interchangeParts.map(p => p.id)] },
+          id: { notIn: foundIds },
           fitments: {
-            some: {
-              vehicle: {
-                make: { equals: query.make, mode: 'insensitive' },
-              },
-            },
+            some: { vehicle: { make: query.make } },
           },
         },
         include: {
-          fitments: {
-            include: { vehicle: true },
-            take: 5,
-          },
-          inventoryEvents: {
-            select: { quantity: true, type: true },
-          },
+          fitments: { include: { vehicle: true }, take: 5 },
+          inventoryEvents: true,
         },
         take: 10,
       });
 
       for (const part of altParts) {
+        const stock = part.inventoryEvents.reduce((sum, e) => sum + e.qtyDelta, 0);
         alternatives.push({
-          ...part,
+          id: part.id,
+          name: part.name,
+          sku: part.sku,
+          description: part.description,
+          condition: part.condition,
+          costCents: part.costCents,
           matchType: 'alternative' as const,
           fitsVehicles: part.fitments.map(f => `${f.vehicle.year} ${f.vehicle.make} ${f.vehicle.model}`),
-          fitments: undefined,
-          inventoryEvents: undefined,
-          stockOnHand: calculateStock(part.inventoryEvents),
+          stockOnHand: stock,
         });
       }
     }
   } else if (query.partName) {
-    // No exact match for vehicle, but search by part name across same make
     const searchParts = await prisma.part.findMany({
       where: {
         OR: [
-          { name: { contains: query.partName, mode: 'insensitive' } },
-          { description: { contains: query.partName, mode: 'insensitive' } },
+          { name: { contains: query.partName } },
+          { description: { contains: query.partName } },
         ],
         fitments: {
-          some: {
-            vehicle: {
-              make: { equals: query.make, mode: 'insensitive' },
-            },
-          },
+          some: { vehicle: { make: query.make } },
         },
       },
       include: {
-        fitments: {
-          include: { vehicle: true },
-          take: 5,
-        },
-        inventoryEvents: {
-          select: { quantity: true, type: true },
-        },
+        fitments: { include: { vehicle: true }, take: 5 },
+        inventoryEvents: true,
       },
       take: 20,
     });
 
     for (const part of searchParts) {
+      const stock = part.inventoryEvents.reduce((sum, e) => sum + e.qtyDelta, 0);
       alternatives.push({
-        ...part,
+        id: part.id,
+        name: part.name,
+        sku: part.sku,
+        description: part.description,
+        condition: part.condition,
+        costCents: part.costCents,
         matchType: 'alternative' as const,
         fitsVehicles: part.fitments.map(f => `${f.vehicle.year} ${f.vehicle.make} ${f.vehicle.model}`),
-        fitments: undefined,
-        inventoryEvents: undefined,
-        stockOnHand: calculateStock(part.inventoryEvents),
+        stockOnHand: stock,
       });
     }
   }
@@ -259,29 +205,10 @@ export async function findSolutions(query: SolutionQuery): Promise<SolutionResul
     exact: exactParts,
     interchange: interchangeParts,
     alternatives,
-    query: {
-      vehicle: vehicleLabel,
-      matchedVehicleId: vehicle.id,
-      totalResults,
-    },
+    query: { vehicle: vehicleLabel, matchedVehicleId: vehicle.id, totalResults },
   };
 }
 
-function calculateStock(events: { quantity: number; type: string }[]): number {
-  return events.reduce((sum, e) => {
-    if (e.type === 'RECEIVE' || e.type === 'RETURN' || e.type === 'CORRECTION') {
-      return sum + e.quantity;
-    }
-    if (e.type === 'FULFILL') {
-      return sum - e.quantity;
-    }
-    return sum;
-  }, 0);
-}
-
-/**
- * Get available makes for the vehicle picker
- */
 export async function getAvailableMakes(): Promise<string[]> {
   const makes = await prisma.vehicle.findMany({
     select: { make: true },
@@ -291,12 +218,9 @@ export async function getAvailableMakes(): Promise<string[]> {
   return makes.map(m => m.make);
 }
 
-/**
- * Get models for a given make
- */
 export async function getModelsByMake(make: string): Promise<string[]> {
   const models = await prisma.vehicle.findMany({
-    where: { make: { equals: make, mode: 'insensitive' } },
+    where: { make },
     select: { model: true },
     distinct: ['model'],
     orderBy: { model: 'asc' },
@@ -304,15 +228,9 @@ export async function getModelsByMake(make: string): Promise<string[]> {
   return models.map(m => m.model);
 }
 
-/**
- * Get years for a given make + model
- */
 export async function getYearsByMakeModel(make: string, model: string): Promise<number[]> {
   const years = await prisma.vehicle.findMany({
-    where: {
-      make: { equals: make, mode: 'insensitive' },
-      model: { equals: model, mode: 'insensitive' },
-    },
+    where: { make, model },
     select: { year: true },
     distinct: ['year'],
     orderBy: { year: 'desc' },
