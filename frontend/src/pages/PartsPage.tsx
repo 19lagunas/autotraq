@@ -513,8 +513,8 @@ export function PartsPage() {
                         {isManager && (
                           <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                             <div className="flex gap-2 justify-end">
-                              <button onClick={() => { setSelectedPart(part); setShowFitmentModal(true); }} className="px-4 py-2 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border whitespace-nowrap border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">+ Fitment</button>
-                              <button onClick={() => { setSelectedPart(part); setShowAddToGroupModal(true); }} className="px-4 py-2 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border whitespace-nowrap border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">+ Group</button>
+                              <button onClick={() => { setSelectedPart(part); setShowFitmentModal(true); }} className="px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border whitespace-nowrap border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">+ Fitment</button>
+                              <button onClick={() => { setSelectedPart(part); setShowAddToGroupModal(true); }} className="px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border whitespace-nowrap border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">+ Group</button>
                             </div>
                           </td>
                         )}
@@ -534,14 +534,14 @@ export function PartsPage() {
                     <button
                       onClick={() => setPage(p => Math.max(1, p - 1))}
                       disabled={page <= 1}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       <ChevronLeft className="w-3.5 h-3.5" /> Prev
                     </button>
                     <button
                       onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                       disabled={page >= totalPages}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       Next <ChevronRight className="w-3.5 h-3.5" />
                     </button>
@@ -562,7 +562,7 @@ export function PartsPage() {
             <p className="text-xs text-slate-500">
               {useSkuGen ? 'Select vehicle details to auto-generate SKU & barcode' : 'Manually enter a SKU identifier'}
             </p>
-            <button type="button" onClick={() => setUseSkuGen(!useSkuGen)} className={`px-3 py-1.5 text-xs rounded-md border transition-colors cursor-pointer ${useSkuGen ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
+            <button type="button" onClick={() => setUseSkuGen(!useSkuGen)} className={`px-4 py-2 text-sm rounded-lg border transition-colors cursor-pointer ${useSkuGen ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}`}>
               {useSkuGen ? '✓ Auto-Generate SKU' : 'Enter SKU Manually'}
             </button>
           </div>
@@ -701,7 +701,7 @@ export function PartsPage() {
               win.document.close();
               win.print();
             }}
-            className="mt-4 flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold rounded-lg transition-colors cursor-pointer"
+            className="mt-4 flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold rounded-lg transition-colors cursor-pointer"
           >
             <Printer className="w-4 h-4" /> Print Barcode
           </button>

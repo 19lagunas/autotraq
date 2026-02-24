@@ -104,7 +104,7 @@ export function RequestsPage() {
             <button
               key={f.value}
               onClick={() => setStatusFilter(f.value)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+              className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
                 statusFilter === f.value
                   ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                   : 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:border-slate-700'
@@ -156,7 +156,7 @@ export function RequestsPage() {
                             <button onClick={() => handleFulfill(req.id)} className="inline-flex items-center gap-3 px-5 py-2.5 text-xs font-medium bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 whitespace-nowrap transition-colors cursor-pointer"><Truck className="w-3.5 h-3.5" /> Fulfill</button>
                           )}
                           {(req.status === 'PENDING' || req.status === 'APPROVED') && isManager && (
-                            <button onClick={() => handleCancel(req.id)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-red-500/10 text-red-400 rounded-md hover:bg-red-500/20 transition-colors cursor-pointer"><Ban className="w-3.5 h-3.5" /> Cancel</button>
+                            <button onClick={() => handleCancel(req.id)} className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-red-500/10 text-red-400 rounded-md hover:bg-red-500/20 transition-colors cursor-pointer"><Ban className="w-3.5 h-3.5" /> Cancel</button>
                           )}
                         </div>
                       </td>

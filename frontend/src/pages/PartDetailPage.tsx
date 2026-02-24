@@ -440,7 +440,7 @@ export function PartDetailPage() {
               <Car className="w-4 h-4" /> Fitments ({part.fitments?.length || 0})
             </h2>
             {isManager && (
-              <button onClick={() => setShowFitmentForm(!showFitmentForm)} className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-md border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">
+              <button onClick={() => setShowFitmentForm(!showFitmentForm)} className="flex items-center gap-2 px-4 py-2 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-md border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">
                 {showFitmentForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                 {showFitmentForm ? 'Cancel' : 'Add Fitment'}
               </button>
@@ -494,7 +494,7 @@ export function PartDetailPage() {
               <Link2 className="w-4 h-4" /> Interchange Groups ({part.interchangeMembers?.length || 0})
             </h2>
             {isManager && (
-              <button onClick={() => showGroupForm ? setShowGroupForm(false) : openGroupForm()} className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-md border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">
+              <button onClick={() => showGroupForm ? setShowGroupForm(false) : openGroupForm()} className="flex items-center gap-2 px-4 py-2 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-md border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">
                 {showGroupForm ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                 {showGroupForm ? 'Cancel' : 'Add to Group'}
               </button>

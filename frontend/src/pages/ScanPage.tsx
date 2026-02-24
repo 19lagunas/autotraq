@@ -261,7 +261,7 @@ export function ScanPage() {
                 <h3 className="text-lg font-bold text-white">SKU Decoded</h3>
                 <p className="text-xs text-slate-500 mt-1">This part is not in inventory</p>
               </div>
-              <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">
+              <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors cursor-pointer">
                 <Printer className="w-3.5 h-3.5" /> Print
               </button>
             </div>

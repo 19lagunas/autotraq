@@ -85,7 +85,7 @@ export function CsvPage() {
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
           >
             {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
             {exporting ? 'Exporting…' : 'Download CSV'}
@@ -109,7 +109,7 @@ export function CsvPage() {
             <input type="file" accept=".csv,text/csv" ref={fileRef} className="hidden" onChange={handleFileSelect} />
             <button
               onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium transition-colors mb-4"
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium transition-colors mb-4"
             >
               <FileSpreadsheet size={16} />
               Choose CSV File
@@ -139,7 +139,7 @@ export function CsvPage() {
                 <button
                   onClick={handleImport}
                   disabled={importing}
-                  className="mt-3 flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
+                  className="mt-3 flex items-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
                 >
                   {importing ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
                   {importing ? 'Importing…' : 'Import Now'}

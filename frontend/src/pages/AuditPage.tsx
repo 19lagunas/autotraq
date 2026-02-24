@@ -204,14 +204,14 @@ export function AuditPage() {
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page <= 1}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" /> Prev
                   </button>
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page >= totalPages}
-                    className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 text-sm bg-slate-800 text-slate-300 hover:text-white rounded-lg border border-slate-700 hover:border-slate-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Next <ChevronRight className="w-3.5 h-3.5" />
                   </button>

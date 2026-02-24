@@ -287,7 +287,7 @@ export function AdminPage() {
                   </span>
                   <button
                     onClick={() => { setResetUserId(resetUserId === u.id ? null : u.id); setResetPassword(''); }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
                   >
                     <KeyRound className="w-3.5 h-3.5" />
                     Reset PW
@@ -295,7 +295,7 @@ export function AdminPage() {
                   {u.id !== user?.id && (
                     <button
                       onClick={() => handleDeleteUser(u)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -303,7 +303,7 @@ export function AdminPage() {
                   {(u.role === 'admin' || u.role === 'manager') && (
                     <button
                       onClick={() => setExpandedBarcode(expandedBarcode === u.id ? null : u.id)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
                     >
                       <QrCode className="w-3.5 h-3.5" />
                       Barcode
@@ -365,13 +365,13 @@ export function AdminPage() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => handleRegenerateBarcode(u.id)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
                           >
                             <RefreshCw className="w-3 h-3" /> Regenerate
                           </button>
                           <button
                             onClick={() => printBarcode(userBarcodes[u.id] || u.loginBarcode || '', u.name)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
                           >
                             <Printer className="w-3 h-3" /> Print
                           </button>
@@ -388,13 +388,13 @@ export function AdminPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleRegenerateBarcode(u.id)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
                         >
                           <RefreshCw className="w-3 h-3" /> Regenerate
                         </button>
                         <button
                           onClick={() => printBarcode(userBarcodes[u.id] || u.loginBarcode || '', u.name)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
                         >
                           <Printer className="w-3 h-3" /> Print Card
                         </button>
@@ -431,13 +431,13 @@ export function AdminPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleDecideRequest(r.id, true)}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm bg-green-500/10 text-green-400 hover:bg-green-500/20 border border-green-500/20 transition-colors cursor-pointer"
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm bg-green-500/10 text-green-400 hover:bg-green-500/20 border border-green-500/20 transition-colors cursor-pointer"
                         >
                           <Check className="w-4 h-4" /> Approve
                         </button>
                         <button
                           onClick={() => handleDecideRequest(r.id, false)}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors cursor-pointer"
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors cursor-pointer"
                         >
                           <X className="w-4 h-4" /> Deny
                         </button>

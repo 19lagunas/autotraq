@@ -118,7 +118,7 @@ export function WelcomePage() {
         </div>
 
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-sm font-medium mb-8">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-400 text-sm font-medium mb-8">
             <Gauge className="w-4 h-4" />
             Automotive Parts Inventory System
           </div>
@@ -190,7 +190,7 @@ export function WelcomePage() {
             {techStack.map((t) => (
               <span
                 key={t.name}
-                className="px-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm text-slate-300 font-medium"
+                className="px-5 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm text-slate-300 font-medium"
               >
                 {t.name}
               </span>
