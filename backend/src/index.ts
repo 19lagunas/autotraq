@@ -22,7 +22,7 @@ app.use(compression());
 app.use(
   cors({
     origin: process.env.NODE_ENV === 'production'
-      ? process.env.FRONTEND_URL
+      ? (process.env.FRONTEND_URL || '').split(',').map(u => u.trim())
       : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:3000'],
     credentials: true,
   })
