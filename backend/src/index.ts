@@ -98,7 +98,16 @@ import { Role } from '@prisma/client';
         console.log(`[SEED] Fixed ${acct.email} → ${acct.role}`);
       }
     }
-    console.log('[STARTUP] Seed/migration complete');
+    console.log('[STARTUP] User seed complete');
+    
+    // Seed solutions data (vehicles, fitments, interchange) if needed
+    const vehicleCount = await prisma.vehicle.count();
+    if (vehicleCount < 10) {
+      console.log('[STARTUP] Seeding solutions data...');
+      await import('./scripts/seed-solutions-data.js').catch(() => {
+        console.log('[STARTUP] Solutions seed import failed (may need build)');
+      });
+    }
   } catch (e) {
     console.log('[STARTUP] Seed skipped:', (e as Error).message);
   }
