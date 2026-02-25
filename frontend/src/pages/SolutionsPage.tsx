@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Layout } from '../components/Layout';
-import { useAuth } from '../contexts/AuthContext';
+import { api } from '../api/client';
 import {
-  Car, Search, Package, ArrowRight, RefreshCw, Sparkles,
-  CheckCircle2, Repeat2, ShoppingBag, TrendingUp, AlertCircle, ChevronRight
+  Car, Search, Package, RefreshCw, Sparkles,
+  CheckCircle2, Repeat2, ShoppingBag, AlertCircle, ChevronRight
 } from 'lucide-react';
 
 type Tab = 'exact' | 'interchange' | 'alternatives' | 'all';
@@ -34,7 +34,6 @@ interface SolutionResult {
 }
 
 export function SolutionsPage() {
-  const { token } = useAuth();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   
   // Vehicle selection
@@ -54,12 +53,17 @@ export function SolutionsPage() {
   const [activeTab, setActiveTab] = useState<Tab>('all');
   const [error, setError] = useState('');
 
-  const API = import.meta.env.VITE_API_URL || 'http://localhost:3002/api';
+  const apiFetch = (endpoint: string) => {
+    const base = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
+    const token = api.getToken();
+    return fetch(`${base}${endpoint}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }).then(r => r.json());
+  };
 
   // Load makes on mount
   useEffect(() => {
-    fetch(`${API}/solutions/makes`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
+    apiFetch('/solutions/makes')
       .then(d => setMakes(d.data || []))
       .catch(() => {});
   }, []);
@@ -70,8 +74,7 @@ export function SolutionsPage() {
     setSelectedModel('');
     setSelectedYear('');
     setYears([]);
-    fetch(`${API}/solutions/models?make=${encodeURIComponent(selectedMake)}`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
+    apiFetch(`/solutions/models?make=${encodeURIComponent(selectedMake)}`)
       .then(d => setModels(d.data || []))
       .catch(() => {});
   }, [selectedMake]);
@@ -80,8 +83,7 @@ export function SolutionsPage() {
   useEffect(() => {
     if (!selectedMake || !selectedModel) { setYears([]); return; }
     setSelectedYear('');
-    fetch(`${API}/solutions/years?make=${encodeURIComponent(selectedMake)}&model=${encodeURIComponent(selectedModel)}`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
+    apiFetch(`/solutions/years?make=${encodeURIComponent(selectedMake)}&model=${encodeURIComponent(selectedModel)}`)
       .then(d => setYears(d.data || []))
       .catch(() => {});
   }, [selectedModel]);
@@ -103,10 +105,7 @@ export function SolutionsPage() {
       });
       if (partQuery.trim()) params.set('partName', partQuery.trim());
 
-      const res = await fetch(`${API}/solutions/search?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
+      const data = await apiFetch(`/solutions/search?${params}`);
       if (data.data) {
         setResults(data.data);
         setActiveTab('all');
