@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api, InventoryEvent, Part } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
 import { Layout } from '../components/Layout';
+import { LowStockAlertPanel } from '../components/LowStockAlertPanel';
 import { 
   Package, 
   Warehouse, 
@@ -205,6 +206,9 @@ export function DashboardPage() {
             Welcome back, {user?.name}. Here's what's happening with your inventory.
           </p>
         </div>
+
+        {/* Low Stock Alert Panel */}
+        <LowStockAlertPanel />
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">

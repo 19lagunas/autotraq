@@ -526,6 +526,17 @@ class ApiClient {
       method: 'POST',
     });
   }
+
+  // Alerts
+  async getLowStockAlerts() {
+    return this.request<{ alerts: LowStockAlert[]; total: number }>('/alerts/low-stock');
+  }
+
+  async dismissLowStockAlert(partId: number) {
+    return this.request<{ message: string }>(`/alerts/low-stock/${partId}/dismiss`, {
+      method: 'POST',
+    });
+  }
 }
 
 // Types
@@ -787,6 +798,20 @@ export interface HierarchyComponent {
 export interface HierarchyItem {
   system: { code: string; name: string };
   components: HierarchyComponent[];
+}
+
+// Alert Types
+export interface LowStockAlert {
+  partId: number;
+  sku: string;
+  name: string;
+  currentQty: number;
+  minStock: number;
+  locations: Array<{
+    locationId: number;
+    locationName: string;
+    qty: number;
+  }>;
 }
 
 export const api = new ApiClient();

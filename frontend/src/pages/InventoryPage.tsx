@@ -5,6 +5,7 @@ import { api, Part, Location, OnHand, InventoryEvent } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
 import { Layout } from '../components/Layout';
 import { PartSearch } from '../components/PartSearch';
+import { Skeleton } from '../components/Skeleton';
 import { Package, MapPin, ArrowDownToLine, PenLine, X, TrendingUp, TrendingDown, Box, Search, Layers, Trash2, Plus } from 'lucide-react';
 
 export function InventoryPage() {
@@ -262,7 +263,13 @@ export function InventoryPage() {
                     </select>
                   </div>
                 </div>
-                {loading ? <div className="p-16 text-center text-slate-500">Loading...</div> : filteredOnHand.length === 0 ? (
+                {loading ? (
+                  <div className="p-8 space-y-4">
+                    <Skeleton className="h-10" />
+                    <Skeleton className="h-10" />
+                    <Skeleton className="h-10" />
+                  </div>
+                ) : filteredOnHand.length === 0 ? (
                   <div className="p-16 text-center"><Package className="w-10 h-10 text-slate-700 mx-auto mb-2" /><p className="text-sm text-slate-500">{onHand.length === 0 ? 'No inventory yet' : 'No matching items'}</p></div>
                 ) : (
                   <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
@@ -284,7 +291,12 @@ export function InventoryPage() {
 
               <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                 <div className="px-8 py-5 border-b border-slate-800"><h3 className="text-sm font-semibold text-white uppercase tracking-wider">Locations</h3></div>
-                {loading ? <div className="p-16 text-center text-slate-500">Loading...</div> : locations.length === 0 ? (
+                {loading ? (
+                  <div className="p-8 space-y-4">
+                    <Skeleton className="h-10" />
+                    <Skeleton className="h-10" />
+                  </div>
+                ) : locations.length === 0 ? (
                   <div className="p-16 text-center"><MapPin className="w-10 h-10 text-slate-700 mx-auto mb-2" /><p className="text-sm text-slate-500">No locations yet</p></div>
                 ) : (
                   <div className="p-4 space-y-2">
@@ -316,7 +328,14 @@ export function InventoryPage() {
         {showEvents && (
           <div ref={eventsRef} className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
             <div className="px-8 py-5 border-b border-slate-800"><h3 className="text-sm font-semibold text-white uppercase tracking-wider">Recent Events</h3></div>
-            {loading ? <div className="p-16 text-center text-slate-500">Loading...</div> : events.length === 0 ? (
+            {loading ? (
+              <div className="p-8 space-y-4">
+                <Skeleton className="h-12" />
+                <Skeleton className="h-12" />
+                <Skeleton className="h-12" />
+                <Skeleton className="h-12" />
+              </div>
+            ) : events.length === 0 ? (
               <div className="p-16 text-center text-slate-500">No events yet</div>
             ) : (
               <div className="overflow-x-auto">
