@@ -1,3 +1,5 @@
+
+import DashboardCharts from "../components/charts/DashboardCharts"; //inc
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, InventoryEvent, Part } from '../api/client';
@@ -251,7 +253,10 @@ export function DashboardPage() {
             link="/inventory?view=low-stock"
             alert={stats?.lowStockCount ? stats.lowStockCount > 0 : false}
           />
+          
+
         </div>
+        <DashboardCharts /> {/* added */}
 
         {/* Quick Actions */}
         <div className="mb-8">
